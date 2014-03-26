@@ -39,7 +39,7 @@ def recalc_map_points(mid):
 
     rank = -1
     last_time = None
-    for n, record in enumerate(records):
+    for record in records:
 
         # increase rank if not tied w/ last
         if record.time != last_time:
