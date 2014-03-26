@@ -63,7 +63,7 @@ class Map(_Base):
     playtime = Column(BigInteger)
     rating = Column(Float)
     ratings = Column(Integer)
-    downlaods = Column(Integer)
+    downloads = Column(Integer)
     force_recompution = Column(Enum(*_enum_bool))
     weapons = Column(String)
     created = Column(DateTime)
