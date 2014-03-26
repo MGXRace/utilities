@@ -5,7 +5,7 @@ Utility functions for managing the pre-1.1 racesow database
 """
 import os
 import rs_models_old as models
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 
 # points for each rank
@@ -58,4 +58,19 @@ def recalc_map_points(mid):
                    (pm.time == None) |
                    (pm.time > last_time)).\
             update({pm.points:0})
+    session.commit()
+
+
+def recalc_player_points(pid):
+    """
+    Recalculate the points for a player
+
+    args:
+        pid (int): ID of the player to recalculate
+    """
+    pm = models.PlayerMap
+    player = session.query(models.Player).get(pid)
+    player.points = session.query(func.sum(pm.points)).\
+                            filter(pm.player_id == pid, pm.points > 0).\
+                            scalar()
     session.commit()
