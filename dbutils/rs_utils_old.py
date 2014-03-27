@@ -98,7 +98,6 @@ def merge_players(pid, *alt_pids):
 
     for pid_ in alt_pids:
         found = list(filter(lambda x: x.id == pid_, alt_players))
-        print( found )
         if not found:
             print("Player not found for id: {}".format(pid_))
 
