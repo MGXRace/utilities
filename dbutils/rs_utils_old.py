@@ -5,6 +5,7 @@ Utility functions for managing the pre-1.1 racesow database
 """
 import os
 import rs_models_old as models
+from collections import defaultdict
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 
@@ -73,4 +74,70 @@ def recalc_player_points(pid):
     player.points = session.query(func.sum(pm.points)).\
                             filter(pm.player_id == pid, pm.points > 0).\
                             scalar()
+    session.commit()
+
+
+def merge_players(pid, *alt_pids):
+    """
+    Merge records from multiple player entries into one.
+    Ignores prejump status, so it will keep the lowest time even if that time
+    is prejumped. It also deletes records which do not have a time.
+
+    args:
+        pid (int): The player id of the target account to merge into
+        alt_pids (iterable): Iterable of player ids to merge
+    """
+    pm = models.PlayerMap
+    player = session.query(models.Player).get(pid)
+    print("Target player: {}\n".format(player))
+
+    # Get the alternate players
+    alt_players = session.query(models.Player).\
+                          filter(models.Player.id.in_(alt_pids))
+
+    print("Merging players")
+    for n, alt in enumerate(alt_players):
+        print(n, alt)
+
+    confirm = input("Is this correct [y/n]: ")
+    if confirm not in ['y', 'Y']:
+        return
+
+    # Get all records for all interesting players
+    records = session.query(pm).\
+                      filter((pm.player_id == pid) |
+                             pm.player_id.in_(alt_pids)).\
+                      all()
+
+    # Group them by map
+    map_records = defaultdict(list)
+    for record in records:
+        map_records[record.map_id].append(record)
+
+    # process each map
+    for mid, mrecords in map_records.items():
+        # find the best record
+        # due to a bug in sqlalchemy, we cant use min() on filtered records
+        best = None
+        for rec in filter(lambda x: x.time is not None, mrecords):
+            if not best or rec.time < best.time:
+                best = rec
+
+        if len(mrecords) > 1:
+            print(best, mrecords)
+
+        # delete the rest
+        for rec in mrecords:
+            if rec is best:
+                continue
+            session.delete(rec)
+        session.commit()
+
+        # transfer ownership of the best rec
+        if best is not None:
+            best.player_id = pid
+
+    # delete alt players
+    for p in alt_players:
+        session.delete(p)
     session.commit()
