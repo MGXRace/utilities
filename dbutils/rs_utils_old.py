@@ -95,6 +95,13 @@ def merge_players(pid, *alt_pids):
     alt_players = session.query(models.Player).\
                           filter(models.Player.id.in_(alt_pids))
 
+
+    for pid_ in alt_pids:
+        found = list(filter(lambda x: x.id == pid_, alt_players))
+        print( found )
+        if not found:
+            print("Player not found for id: {}".format(pid_))
+
     print("Merging players")
     for n, alt in enumerate(alt_players):
         print(n, alt)
