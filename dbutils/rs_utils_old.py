@@ -123,9 +123,6 @@ def merge_players(pid, *alt_pids):
             if not best or rec.time < best.time:
                 best = rec
 
-        if len(mrecords) > 1:
-            print(best, mrecords)
-
         # delete the rest
         for rec in mrecords:
             if rec is best:
