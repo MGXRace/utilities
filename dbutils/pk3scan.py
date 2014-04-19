@@ -13,7 +13,7 @@ Scans a folder for pk3 files and checks them for the following:
 import logging
 import sys
 from zipfile import ZipFile
-from pathlib import Path, PurePath
+from pathlib import Path
 from docopt import docopt
 
 
