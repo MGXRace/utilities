@@ -1,24 +1,5 @@
 - hosts: gameserver
   sudo: yes
   remote_user: "{{ provision_user }}"
-
-  tasks:
-      - name: Create wsw user
-        user: name="{{ wswuser }}"
-              password="{{ wswpass }}"
-              home=/srv/warsow
-              shell=/bin/bash
-              state=present
-              groups=sudo
-
-      - name: Add authorized ssh keys for user
-        authorized_key: user="{{ wswuser }}"
-                        key="{{ lookup('file', 'files/example_key.pub') }}"
-
-      - name: Installing supervisor
-        apt: pkg=supervisor
-             state=present
-
-      - name: Starting supervisor
-        service: name=supervisor
-                 state=started
+  roles:
+    - provision_gameserver

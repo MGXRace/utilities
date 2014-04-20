@@ -1,0 +1,24 @@
+- name: Create wsw user
+  user: name="{{ wswuser }}"
+        password="{{ wswpass }}"
+        home="{{ homedir }}"
+        shell=/bin/bash
+        state=present
+
+- name: Add authorized ssh keys for user
+  authorized_key: user="{{ wswuser }}"
+                  key="{{ lookup('file', 'example_key.pub') }}"
+
+- name: Installing supervisor
+  apt: pkg=supervisor
+       state=present
+  notify: restart supervisor
+
+- name: Installing s3cmd
+  apt: pkg=s3cmd
+       state=present
+
+- name: Installing gameserver
+  sudo_user: "{{ wswuser }}"
+  unarchive: src="warsow_14_unified.tar.gz"
+             dest="{{ homedir }}/"
