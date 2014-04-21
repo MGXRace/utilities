@@ -22,10 +22,10 @@
             dest="{{ homedir }}/.s3cfg"
 
 - name: Syncing Mappool
-  command: /usr/bin/s3cmd sync s3://racesow/maps/ "{{ homedir }}/warsow_maps/"
+  command: /usr/bin/s3cmd sync --delete-removed s3://racesow/maps/ "{{ homedir }}/warsow_maps/"
 
 - name: Syncing Modules
-  command: /usr/bin/s3cmd sync s3://racesow/release/ "{{ homedir }}/warsow_modules/"
+  command: /usr/bin/s3cmd sync --delete-removed s3://racesow/release/ "{{ homedir }}/warsow_modules/"
 
 - name: Cleaning old links
   command: find "{{ homedir }}/warsow_14/{{ fs_game }}" -type l -delete
