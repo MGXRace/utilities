@@ -1,6 +1,11 @@
 - name: Stopping racesow server
   command: /usr/bin/sudo supervisorctl stop racesow
 
+- name: Updating gameserver
+  sudo_user: "{{ wswuser }}"
+  unarchive: src="warsow_14_unified.tar.gz"
+             dest="{{ homedir }}/"
+
 - name: Making mod directory
   file: path="{{ homedir }}/warsow_14/{{ fs_game }}"
         state=directory

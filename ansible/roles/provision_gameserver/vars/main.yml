@@ -1,0 +1,6 @@
+supervisor_racesow:
+  - { option: user, value: "{{ wswuser }}" }
+  - { option: directory, value: "{{ homedir }}/warsow_14" }
+  - { option: autostart, value: true }
+  - { option: autorestart, value: true }
+  - { option: command, value: "{{ homedir }}/warsow_14/wsw_server.x86_64 +set fs_basepath {{ homedir }}/warsow_14 +set fs_usehomedir 0 +set fs_game {{ fs_game }}" }

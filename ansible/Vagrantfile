@@ -6,7 +6,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define 'gameserver1' do |gameserver1_config|
-      gameserver1_config.vm.box = "chef/debian-7.4"
+      gameserver1_config.vm.box = "hashicorp/precise64"
       gameserver1_config.vm.host_name = "gameserver1"
       gameserver1_config.vm.network "private_network", ip: "10.0.0.100"
   end
@@ -15,5 +15,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       gameserver2_config.vm.box = "chef/debian-7.4"
       gameserver2_config.vm.host_name = "gameserver2"
       gameserver2_config.vm.network "private_network", ip: "10.0.0.101"
+  end
+
+  config.vm.define 'gameserver3' do |gameserver3_config|
+      gameserver3_config.vm.box = "chef/centos-6.5"
+      gameserver3_config.vm.host_name = "gameserver3"
+      gameserver3_config.vm.network "private_network", ip: "10.0.0.102"
   end
 end

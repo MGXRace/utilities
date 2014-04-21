@@ -9,15 +9,51 @@
   authorized_key: user="{{ wswuser }}"
                   key="{{ lookup('file', 'example_key.pub') }}"
 
-- name: Installing supervisor
-  apt: pkg=supervisor
-       state=present
-  notify: restart supervisor
+- name: Bootstrapping EPEL for CentOS
+  copy: src=bootstrap-epel.repo
+        dest=/etc/yum.repos.d/bootstrap-epel.repo
+        owner=root
+        group=root
+        mode=0644
+  when: ansible_distribution == 'CentOS'
 
-- name: Configuring supervisor
-  template: src="racesow.conf.j2"
-            dest="/etc/supervisor/conf.d/10.racesow.conf"
-  notify: restart supervisor
+- name: Installing EPEL for CentOS
+  yum: name=epel-release
+       state=present
+       enablerepo=bootstrap-epel
+  when: ansible_distribution == 'CentOS'
+
+- name: Installing packages
+  apt: pkg={{ item }}
+       state=present
+  with_items:
+    - s3cmd
+    - supervisor
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Installing packages
+  yum: name={{ item }}
+       state=present
+  with_items:
+    - s3cmd
+    - supervisor
+  when: ansible_distribution == 'CentOS'
+
+- name: Configuring supervisor for Debain / Ubuntu
+  ini_file: dest=/etc/supervisor/conf.d/10.racesow.conf
+            section=program:racesow
+            option="{{ item.option }}"
+            value="{{ item.value }}"
+  with_items: supervisor_racesow
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Configuring supervisor for CentOS
+  ini_file: dest=/etc/supervisord.conf
+            section=program:racesow
+            option="{{ item.option }}"
+            value="{{ item.value }}"
+  with_items: supervisor_racesow
+  when: ansible_distribution == 'CentOS'
 
 - name: Configuring sudo
   template: src="99_warsow.j2"
@@ -25,12 +61,3 @@
             owner=root
             group=root
             mode=0440
-
-- name: Installing s3cmd
-  apt: pkg=s3cmd
-       state=present
-
-- name: Installing gameserver
-  sudo_user: "{{ wswuser }}"
-  unarchive: src="warsow_14_unified.tar.gz"
-             dest="{{ homedir }}/"
