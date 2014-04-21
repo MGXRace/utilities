@@ -1,0 +1,4 @@
+- hosts: gameserver
+  remote_user: "{{ wswuser }}"
+  roles:
+    - gameserver

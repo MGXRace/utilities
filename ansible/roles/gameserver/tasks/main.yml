@@ -1,0 +1,37 @@
+- name: Stopping racesow server
+  command: /usr/bin/sudo supervisorctl stop racesow
+
+- name: Making mod directory
+  file: path="{{ homedir }}/warsow_14/{{ fs_game }}"
+        state=directory
+
+- name: Making module directory
+  file: path="{{ homedir }}/warsow_modules"
+        state=directory
+
+- name: Making map directory
+  file: path="{{ homedir }}/warsow_maps"
+        state=directory
+
+- name: Configuring racesow server
+  template: src=dedicated_autoexec.cfg.j2
+            dest="{{ homedir }}/warsow_14/{{ fs_game }}/dedicated_autoexec.cfg"
+
+- name: Configuring s3cmd
+  template: src=s3cfg.j2
+            dest="{{ homedir }}/.s3cfg"
+
+- name: Syncing Mappool
+  command: /usr/bin/s3cmd sync s3://racesow/maps/ "{{ homedir }}/warsow_maps/"
+
+- name: Syncing Modules
+  command: /usr/bin/s3cmd sync s3://racesow/release/ "{{ homedir }}/warsow_modules/"
+
+- name: Cleaning old links
+  command: find "{{ homedir }}/warsow_14/{{ fs_game }}" -type l -delete
+
+- name: Linking maps and modules
+  shell: ln -s {{ homedir }}/warsow_maps/*.pk3 {{ homedir }}/warsow_modules/*.pk3 {{ homedir }}/warsow_14/{{ fs_game }}/
+
+- name: Starting racesow server
+  command: /usr/bin/sudo supervisorctl start racesow

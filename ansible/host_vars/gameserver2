@@ -1,6 +1,8 @@
 provision_user: vagrant
 ansible_ssh_host: 10.0.0.101
 ansible_ssh_port: 22
+aws_access_key: sample_access_key
+aws_secret_key: sample_secret_key
 sv_hostname: Sample Race Server #2
 sv_mm_authkey: sample_key_2
 rs_statsId: 2
