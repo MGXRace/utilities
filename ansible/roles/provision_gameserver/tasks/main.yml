@@ -26,9 +26,11 @@
 - name: Installing packages
   apt: pkg={{ item }}
        state=present
+       update_cache=yes
   with_items:
     - s3cmd
     - supervisor
+    - libcurl4-openssl-dev
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Installing packages
