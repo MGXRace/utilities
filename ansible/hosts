@@ -1,4 +1,5 @@
 # development inventory
 
 [gameserver]
-vagrant1
+gameserver1
+gameserver2

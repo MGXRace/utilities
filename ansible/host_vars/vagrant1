@@ -1,7 +1,0 @@
-provision_user: vagrant
-ansible_ssh_host: 127.0.0.1
-ansible_ssh_port: 2222
-sv_hostname: Sample Race Server
-sv_mm_authkey: sample_key
-rs_statsId: 1
-rs_statsKey: sample_key

@@ -1,0 +1,19 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.define 'gameserver1' do |gameserver1_config|
+      gameserver1_config.vm.box = "chef/debian-7.4"
+      gameserver1_config.vm.host_name = "gameserver1"
+      gameserver1_config.vm.network "private_network", ip: "10.0.0.100"
+  end
+
+  config.vm.define 'gameserver2' do |gameserver2_config|
+      gameserver2_config.vm.box = "chef/debian-7.4"
+      gameserver2_config.vm.host_name = "gameserver2"
+      gameserver2_config.vm.network "private_network", ip: "10.0.0.101"
+  end
+end
