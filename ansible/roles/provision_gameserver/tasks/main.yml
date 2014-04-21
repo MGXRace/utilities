@@ -14,6 +14,18 @@
        state=present
   notify: restart supervisor
 
+- name: Configuring supervisor
+  template: src="racesow.conf.j2"
+            dest="/etc/supervisor/conf.d/10.racesow.conf"
+  notify: restart supervisor
+
+- name: Configuring sudo
+  template: src="99_warsow.j2"
+            dest="/etc/sudoers.d/99_warsow"
+            owner=root
+            group=root
+            mode=0440
+
 - name: Installing s3cmd
   apt: pkg=s3cmd
        state=present
