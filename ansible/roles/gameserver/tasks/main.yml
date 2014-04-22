@@ -31,7 +31,7 @@
 
 - name: Adding mapsync cron job
   cron: name="sync maps"
-        job="/usr/bin/s3cmd sync s3://racesow/maps/coldrun.pk3 {{ homedir }}/warsow_maps/"
+        job="/usr/bin/s3cmd sync s3://racesow/maps/ {{ homedir }}/warsow_maps/"
         hour="0,6,12,18"
 
 - name: Adding restart racesow cron job
