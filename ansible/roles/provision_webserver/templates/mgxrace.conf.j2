@@ -1,0 +1,7 @@
+; Supervisor configuration file for mgxrace website
+[program:racesow]
+user={{ user }}
+directory={{ home }}
+autostart=true
+autorestart=true
+command={{ home }}/mgxrace_start.sh

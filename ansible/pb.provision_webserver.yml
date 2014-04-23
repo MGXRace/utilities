@@ -1,0 +1,5 @@
+- hosts: webserver
+  sudo: yes
+  remote_user: "{{ provision_user }}"
+  roles:
+    - provision_webserver

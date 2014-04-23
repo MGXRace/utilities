@@ -1,0 +1,8 @@
+# password is 'password'
+provision_user: vagrant
+ansible_ssh_host: 10.0.0.103
+ansible_ssh_port: 22
+user: mgxrace
+group: webapps
+pass: $6$rounds=100000$qQINNeUKpugVAIqa$/9gX35CweTW8OQttoz3Xz7ipL5AWXYE5mUrCNA3hpOXrJfhn9ZY2Jn2fKXjeSShe3hilyBOtQbd2y9y3pauA2.
+home: /srv/mgxrace

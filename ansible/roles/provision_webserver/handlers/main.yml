@@ -1,0 +1,10 @@
+- name: Restart nginx
+  service:
+    name=nginx
+    state=restarted
+
+- name: Reread supervisor
+  command: supervisorctl reread
+
+- name: Update supervisor
+  command: supervisorctl update

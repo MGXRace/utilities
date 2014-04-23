@@ -5,3 +5,6 @@ gameserver3
 
 [dbserver]
 dbserver
+
+[webserver]
+webserver

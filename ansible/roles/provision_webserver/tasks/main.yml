@@ -1,0 +1,63 @@
+- name: Ensure group exists
+  group:
+    name="{{ group }}"
+    state=present
+
+- name: Create mgx user
+  user:
+    name="{{ user }}"
+    password="{{ pass }}"
+    home="{{ home }}"
+    group="{{ group }}"
+    shell=/bin/bash
+    state=present
+
+- name: Add authorized ssh keys for user
+  authorized_key:
+    user="{{ user }}"
+    key="{{ lookup('file', 'example_key.pub') }}"
+
+- name: Ensure sudo access to supervisor commands
+  template: src="99_mgxrace.j2"
+            dest="/etc/sudoers.d/99_mgxrace"
+            owner=root
+            group=root
+            mode=0440
+
+- name: Ensure packages are installed
+  apt:
+    name={{ item }}
+    update_cache=yes
+  with_items:
+    - python-virtualenv
+    - supervisor
+    - nginx
+
+- name: Ensure nginx conf for mgxrace exists
+  template:
+    src="10.mgxrace.j2"
+    dest="/etc/nginx/sites-available/10.mgxrace"
+  notify: Restart nginx
+
+- name: Ensure nginx conf for mgxrace enabled
+  file:
+    path="/etc/nginx/sites-enabled/10.mgxrace"
+    src="/etc/nginx/sites-available/10.mgxrace"
+    state=link
+  notify: Restart nginx
+
+- name: Ensure supervisor conf for mgxrace enabled
+  template:
+    src="mgxrace.conf.j2"
+    dest="/etc/supervisor/conf.d/10.mgxrace.conf"
+  notify: Reread supervisor
+  notify: Update supervisor
+
+- name: Ensure services are enabled
+  service:
+    name={{ item }}
+    enabled=yes
+    state=started
+  with_items:
+    - nginx
+    - supervisor
