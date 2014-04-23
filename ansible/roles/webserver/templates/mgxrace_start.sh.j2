@@ -1,0 +1,21 @@
+#!/bin/bash
+
+NAME="mgxrace_app"
+DJANGODIR={{ home }}/website
+SOCKFILE={{ home }}/mgxrace.sock
+USER={{ user }}
+GROUP={{ group }}
+NUM_WORKERS=$(( $(cat /proc/cpuinfo | grep processor | wc -l) * 2 + 1 ))
+DJANGO_SETTINGS_MODULE=mgxrace.settings
+DJANGO_WSGI_MODULE=mgxrace.wsgi
+
+cd $DJANGODIR
+source {{ home }}/venv/bin/activate
+export PYTHONPATH=$DJANGODIR:$PYTHONPATH
+
+exec {{ home }}/venv/bin/gunicorn ${DJANGO_WSGI_MODULE}:application \
+	--name $NAME \
+	--workers ${NUM_WORKERS} \
+	--user=$USER --group=$GROUP \
+	--log-level=debug \
+	--bind=unix:$SOCKFILE

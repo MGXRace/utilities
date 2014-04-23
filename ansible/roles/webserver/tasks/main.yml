@@ -1,0 +1,47 @@
+- name: Stopping webserver
+  command: sudo supervisorctl stop mgxrace
+
+- name: Ensure webserver is uptodate
+  git:
+    repo="git@gitlab.com:mgxrace/website.git"
+    accept_hostkey=yes
+    dest="{{ home }}/website"
+    version="production"
+  register: git_result
+
+- name: Ensure virtualenv is uptodate
+  pip:
+    virtualenv="{{ home }}/venv"
+    requirements="{{ home }}/website/requirements.txt"
+
+- name: Ensure gunicorn is available
+  pip:
+    virtualenv="{{ home }}/venv"
+    name=gunicorn
+
+- name: Django syncdb
+  django_manage:
+    virtualenv="{{ home }}/venv"
+    app_path="{{ home }}/website"
+    command=syncdb
+
+- name: Django migrate
+  django_manage:
+    virtualenv="{{ home }}/venv"
+    app_path="{{ home }}/website"
+    command=migrate
+
+- name: Django collectstatic
+  django_manage:
+    virtualenv="{{ home }}/venv"
+    app_path="{{ home }}/website"
+    command=collectstatic
+
+- name: Ensure gunicorn startscript exists
+  template:
+    src="mgxrace_start.sh.j2"
+    dest="{{ home }}/mgxrace_start.sh"
+    mode=0744
+
+- name: Starting webserver
+  command: sudo supervisorctl start mgxrace

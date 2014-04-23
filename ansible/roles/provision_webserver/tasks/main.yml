@@ -32,6 +32,9 @@
     - python-virtualenv
     - supervisor
     - nginx
+    - git
+    - libpq-dev
+    - python-dev
 
 - name: Ensure nginx conf for mgxrace exists
   template:
