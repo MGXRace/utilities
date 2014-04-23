@@ -22,4 +22,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       gameserver3_config.vm.host_name = "gameserver3"
       gameserver3_config.vm.network "private_network", ip: "10.0.0.102"
   end
+
+  config.vm.define 'dbserver' do |dbserver_config|
+      dbserver.vm.box = 'chef-debian-7.4'
+      dbserver.vm.host_name = 'dbserver'
+      dbserver.vm.network "private_network", ip: "10.0.0.103"
+  end
 end

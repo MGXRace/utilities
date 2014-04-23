@@ -1,0 +1,5 @@
+- hosts: dbserver
+  sudo: yes
+  remote_user: "{{ provision_user }}"
+  roles:
+    - dbserver

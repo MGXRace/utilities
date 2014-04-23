@@ -2,3 +2,6 @@
 gameserver1
 gameserver2
 gameserver3
+
+[dbserver]
+dbserver

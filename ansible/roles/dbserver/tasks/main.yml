@@ -1,0 +1,50 @@
+- name: Ensure postgres packages installed
+  apt:
+    name={{ item }}
+    update_cache=yes
+  with_items:
+    - python-psycopg2
+    - postgresql
+
+- name: Ensure postgres service enabled
+  service:
+    name=postgresql
+    enabled=yes
+
+- name: Ensure postgres listens on all addresses
+  lineinfile:
+    dest=/etc/postgresql/9.1/main/postgresql.conf
+    regexp='^#?listen_addresses\s*='
+    line="listen_addresses = '*'"
+    state=present
+  notify: Restart postgres
+
+- name: Ensure user access to database on all hosts
+  lineinfile:
+    dest=/etc/postgresql/9.1/main/pg_hba.conf
+    line='host {{ dbname }} {{ dbuser }} 0.0.0.0/0 md5'
+    state=present
+  notify: Restart postgres
+
+- name: Ensure database is created
+  sudo_user: postgres
+  postgresql_db:
+    name='{{ dbname }}'
+    state=present
+  notify: Reload postgres
+
+- name: Ensure user has privleges
+  sudo_user: postgres
+  postgresql_user:
+    db="{{ dbname }}"
+    name="{{ dbuser }}"
+    password="{{ dbpass }}"
+    priv=ALL
+  notify: Reload postgres
+
+- name: Remove unneeded privileges
+  sudo_user: postgres
+  postgresql_user:
+    name="{{ dbuser }}"
+    role_attr_flags=NOSUPERUSER,NOCREATEDB
+  notify: Reload postgres
