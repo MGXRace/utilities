@@ -1,0 +1,4 @@
+- hosts: webserver
+  remote_user: "{{ user }}"
+  roles:
+    - webserver
