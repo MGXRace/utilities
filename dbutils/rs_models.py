@@ -36,7 +36,7 @@ class Tag(_Base):
     __tablename__ = 'racesow_tag'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String(255))
 
     def __repr__(self):
         return '<Tag(id={}, name="{}")>'.format(self.id, self.name)
@@ -48,10 +48,10 @@ class Server(_Base):
 
     id = Column(Integer, primary_key=True)
     user = Column(Integer) # Todo - this is a foreign key to user
-    address = Column(String)
-    auth_key = Column(String)
-    name = Column(String)
-    simplified = Column(String)
+    address = Column(String(255))
+    auth_key = Column(String(255))
+    name = Column(String(255))
+    simplified = Column(String(255))
     players = Column(Text)
     playtime = Column(BigInteger)
     races = Column(Integer)
@@ -67,14 +67,14 @@ class Map(_Base):
     __tablename__ = 'racesow_map'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    pk3file = Column(String, default='')
-    levelshotfile = Column(String, default='')
+    name = Column(String(255))
+    pk3file = Column(String(255), default='')
+    levelshotfile = Column(String(255), default='')
     enabled = Column(Boolean, default=True)
     races = Column(Integer, default=0)
     playtime = Column(BigInteger, default=0)
     created = Column(DateTime, default=lambda x: datetime.utcnow())
-    oneliner = Column(String, default='')
+    oneliner = Column(String(255), default='')
     tags = relationship('Tag', secondary=_MAPTAG, backref='maps')
 
     def __repr__(self):
@@ -87,8 +87,8 @@ class Player(_Base):
     id = Column(Integer, primary_key=True)
     user = Column(Integer) # Todo: this is a foreign key to user
     admin = Column(Boolean)
-    name = Column(String)
-    simplified = Column(String)
+    name = Column(String(255))
+    simplified = Column(String(255))
     playtime = Column(BigInteger)
     races = Column(Integer)
     maps = Column(Integer)
