@@ -19,7 +19,7 @@ from docopt import docopt
 from pathlib import Path
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
-from zipfile import ZipFile
+from zipfile import ZipFile, BadZipfile
 
 
 # Configure the db connection
@@ -152,7 +152,11 @@ def scan(pk3dir, basedir):
 
     # Check if pk3s include same files
     for pk3file in pk3path.glob('*.pk3'):
-        pk3zip = ZipFile(str(pk3file))
+        try:
+            pk3zip = ZipFile(str(pk3file))
+        except BadZipfile:
+            logging.error('error: {} is not a zipfile!'.format(pk3file))
+            continue
         for name in pk3zip.namelist():
             if name in basefiles:
                 logging.error('{} overwrites file {}'.format(pk3file, name))
